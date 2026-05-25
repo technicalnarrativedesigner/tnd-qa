@@ -1,72 +1,45 @@
-# TND QA — Playwright Portfolio (SauceDemo)
+# TND QA Portfolio
 
-End-to-end tests for [SauceDemo / Swag Labs](https://www.saucedemo.com) using **Playwright**, **Python**, **pytest**, and the **Page Object Model**. Credentials and base URL come from environment variables so nothing sensitive is committed to git.
+QA automation samples in one repo: **browser E2E** and **REST API** testing.
 
-## Prerequisites
+| Suite | Tool | Target | Folder |
+|-------|------|--------|--------|
+| **UI** | Playwright + pytest + POM | [SauceDemo](https://www.saucedemo.com) | [`ui/`](ui/) |
+| **API** | Postman + Newman | [ReqRes](https://reqres.in) | [`api/postman/`](api/postman/) |
 
-- Python 3.10+
-- pip
+## Quick start
 
-## Setup
+### UI (Playwright)
 
 ```bash
-cd tnd-qa
-python -m venv .venv
-source .venv/bin/activate   # Windows: .venv\Scripts\activate
+cd ui
+python -m venv .venv && source .venv/bin/activate
 pip install -e .
 playwright install chromium
 cp .env.example .env
+pytest
 ```
 
-Edit `.env` if you need different users or a different base URL.
+Details: [ui/README.md](ui/README.md)
 
-## Run tests
+### API (Postman / Newman)
 
 ```bash
-pytest                    # full suite (headless Chromium)
-pytest -m smoke           # critical path only
-pytest -m regression      # broader coverage
-pytest --headed           # watch the browser while debugging
+cd api/postman
+npm install
+npm test
 ```
 
-## Debug failures
+Or import `reqres.collection.json` and `reqres.environment.json` into the Postman app.
 
-Playwright keeps a trace when a test fails:
+Details: [api/postman/README.md](api/postman/README.md)
 
-```bash
-playwright show-trace test-results/<path-to-trace.zip>
-```
+## Why one repo?
 
-Open the HTML report from the last run:
-
-```bash
-playwright show-report
-```
-
-## Project layout
-
-| Path | Purpose |
-|------|---------|
-| `pages/` | Page objects — locators and actions only |
-| `tests/` | pytest tests and fixtures |
-| `tests/conftest.py` | env loading, page fixtures, logged-in session |
-
-## Test scope
-
-| File | Coverage |
-|------|----------|
-| `test_auth.py` | Valid login, invalid credentials, locked-out user, logout |
-| `test_inventory.py` | Add/remove items, cart badge counts |
-| `test_cart.py` | Cart contents, remove on cart page, continue shopping |
-| `test_checkout.py` | Full purchase flow, validation errors, cancel |
-
-## Why Playwright (vs Selenium)?
-
-- **Auto-waiting** — less flaky `sleep()` and explicit waits
-- **Trace viewer** — step-through replay on failure
-- **Speed** — faster browser automation and parallel-friendly design
-- **Modern API** — locators, contexts, and built-in assertions via `expect`
+- Single portfolio link for recruiters
+- Shared conventions (env files, README structure)
+- UI and API skills side by side without mixing Python page objects with Postman JSON
 
 ## License
 
-Portfolio / learning project — SauceDemo is owned by Sauce Labs.
+Portfolio / learning project. SauceDemo and ReqRes are third-party demo services.

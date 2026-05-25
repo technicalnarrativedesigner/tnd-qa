@@ -1,7 +1,7 @@
 [project]
 name = "tnd-qa"
 version = "0.1.0"
-description = "Playwright + pytest portfolio tests for SauceDemo (Swag Labs)"
+description = "Playwright + pytest UI tests for SauceDemo (Swag Labs)"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [

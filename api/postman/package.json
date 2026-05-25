@@ -1,0 +1,11 @@
+{
+  "name": "tnd-qa-reqres",
+  "private": true,
+  "description": "Newman runner for ReqRes Postman collection",
+  "scripts": {
+    "test": "newman run reqres.collection.json -e reqres.environment.json"
+  },
+  "devDependencies": {
+    "newman": "^6.2.1"
+  }
+}
