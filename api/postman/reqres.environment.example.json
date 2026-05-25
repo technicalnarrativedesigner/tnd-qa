@@ -1,10 +1,22 @@
 {
-  "id": "tnd-reqres-env",
-  "name": "ReqRes",
+  "id": "tnd-reqres-env-example",
+  "name": "ReqRes (example)",
   "values": [
     {
       "key": "baseUrl",
       "value": "https://reqres.in",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "apiKey",
+      "value": "YOUR_API_KEY_HERE",
+      "type": "secret",
+      "enabled": true
+    },
+    {
+      "key": "reqresEnv",
+      "value": "prod",
       "type": "default",
       "enabled": true
     },

@@ -2,9 +2,47 @@
   "info": {
     "_postman_id": "tnd-reqres-collection",
     "name": "ReqRes API",
-    "description": "Portfolio API tests for https://reqres.in — status codes, JSON shape, and auth flows.",
+    "description": "Portfolio API tests for https://reqres.in. Requires a free API key from https://app.reqres.in (x-api-key header on all requests).",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "x-api-key",
+        "type": "string"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}",
+        "type": "string"
+      },
+      {
+        "key": "in",
+        "value": "header",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const apiKey = pm.environment.get('apiKey');",
+          "if (!apiKey || apiKey === 'YOUR_API_KEY_HERE') {",
+          "    throw new Error(",
+          "        'Missing apiKey. Sign up at https://app.reqres.in, copy your manage key into reqres.environment.json (see reqres.environment.example.json).'",
+          "    );",
+          "}",
+          "pm.request.headers.upsert({ key: 'X-Reqres-Env', value: pm.environment.get('reqresEnv') || 'prod' });",
+          "pm.request.headers.upsert({ key: 'User-Agent', value: 'tnd-qa-reqres/1.0' });"
+        ]
+      }
+    }
+  ],
   "item": [
     {
       "name": "Users",

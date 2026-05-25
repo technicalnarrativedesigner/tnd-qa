@@ -16,3 +16,4 @@ htmlcov/
 node_modules/
 package-lock.json
 api/postman/newman/
+api/postman/reqres.environment.json

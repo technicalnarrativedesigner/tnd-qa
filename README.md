@@ -26,6 +26,8 @@ Details: [ui/README.md](ui/README.md)
 
 ```bash
 cd api/postman
+cp reqres.environment.example.json reqres.environment.json
+# Edit reqres.environment.json — set apiKey from https://app.reqres.in
 npm install
 npm test
 ```
