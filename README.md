@@ -1,10 +1,11 @@
 # TND QA Portfolio
 
-QA automation samples in one repo: **browser E2E** and **REST API** testing.
+QA automation samples in one repo: **browser E2E** (two frameworks) and **REST API** testing.
 
 | Suite | Tool | Target | Folder |
 |-------|------|--------|--------|
-| **UI** | Playwright + pytest + POM | [SauceDemo](https://www.saucedemo.com) | [`ui/`](ui/) |
+| **UI (Playwright)** | Playwright + pytest + POM | [SauceDemo](https://www.saucedemo.com) | [`ui/`](ui/) |
+| **UI (Selenium)** | Selenium 4 + pytest + POM | [SauceDemo](https://www.saucedemo.com) | [`selenium/`](selenium/) |
 | **API** | Postman + Newman | [ReqRes](https://reqres.in) | [`api/postman/`](api/postman/) |
 
 ## Quick start
@@ -21,6 +22,20 @@ pytest
 ```
 
 Details: [ui/README.md](ui/README.md)
+
+### UI (Selenium)
+
+Same SauceDemo scenarios as Playwright — for teams still on Selenium 4.
+
+```bash
+cd selenium
+python -m venv .venv && source .venv/bin/activate
+pip install -e .
+cp .env.example .env
+pytest
+```
+
+Details: [selenium/README.md](selenium/README.md)
 
 ### API (Postman / Newman)
 
@@ -40,6 +55,7 @@ Details: [api/postman/README.md](api/postman/README.md)
 
 - Single portfolio link for recruiters
 - Shared conventions (env files, README structure)
+- Playwright and Selenium UI suites are parallel (same tests, different runners)
 - UI and API skills side by side without mixing Python page objects with Postman JSON
 
 ## License

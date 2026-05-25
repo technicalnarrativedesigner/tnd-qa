@@ -1,0 +1,26 @@
+[project]
+name = "tnd-qa-selenium"
+version = "0.1.0"
+description = "Selenium + pytest UI tests for SauceDemo (Swag Labs)"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "selenium>=4.27.0",
+    "pytest>=7.4.0",
+    "python-dotenv>=1.0.0",
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["pages*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "smoke: fast critical-path tests",
+    "regression: broader functional coverage",
+]

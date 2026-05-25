@@ -1,0 +1,56 @@
+# UI — Selenium (SauceDemo)
+
+Same SauceDemo coverage as the [Playwright suite](../ui/), implemented with **Selenium 4** (Python), **pytest**, and the **Page Object Model**. Uses Selenium Manager to resolve ChromeDriver automatically — no manual driver downloads.
+
+## Prerequisites
+
+- Python 3.10+
+- Google Chrome installed
+
+## Setup
+
+```bash
+cd selenium
+python -m venv .venv
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -e .
+cp .env.example .env
+```
+
+## Run tests
+
+```bash
+pytest                    # headless Chrome (default)
+pytest -m smoke           # critical path only
+pytest -m regression      # broader coverage
+HEADED=1 pytest           # visible browser window
+```
+
+## Layout
+
+| Path | Purpose |
+|------|---------|
+| `pages/` | Page objects — locators and actions |
+| `tests/` | pytest tests (mirrors `ui/tests/`) |
+| `config.py` | Settings from `.env` |
+
+## Test scope
+
+Same 14 scenarios as Playwright:
+
+| File | Coverage |
+|------|----------|
+| `test_auth.py` | Valid login, invalid credentials, locked-out user, logout |
+| `test_inventory.py` | Add/remove items, cart badge counts |
+| `test_cart.py` | Cart contents, remove on cart page, continue shopping |
+| `test_checkout.py` | Full purchase flow, validation errors, cancel |
+
+## Playwright vs Selenium (this repo)
+
+| | Playwright (`ui/`) | Selenium (`selenium/`) |
+|--|-------------------|------------------------|
+| Waits | Built-in auto-wait | Explicit `WebDriverWait` |
+| Driver | `playwright install chromium` | Selenium Manager + local Chrome |
+| Assertions | `expect(locator)` | Standard `assert` + `EC` |
+
+Both suites share `.env` variable names and page object structure for easy comparison.

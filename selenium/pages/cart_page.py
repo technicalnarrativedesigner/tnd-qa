@@ -1,0 +1,51 @@
+from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.support import expected_conditions as EC
+
+from pages.base_page import BasePage
+
+
+class CartPage(BasePage):
+    def __init__(self, driver: WebDriver, base_url: str) -> None:
+        super().__init__(driver, base_url)
+        self._cart_items = (By.CSS_SELECTOR, ".cart_item")
+        self._continue_shopping = (By.ID, "continue-shopping")
+        self._checkout = (By.ID, "checkout")
+        self._cart_badge = (By.CSS_SELECTOR, ".shopping_cart_badge")
+
+    def expect_loaded(self) -> None:
+        self.wait.until(EC.url_contains("cart.html"))
+
+    def _item_xpath(self, product_name: str) -> str:
+        return (
+            f"//div[contains(@class,'cart_item')]"
+            f"[.//div[contains(@class,'inventory_item_name') and normalize-space()='{product_name}']]"
+        )
+
+    def remove_item_by_name(self, product_name: str) -> None:
+        button = (
+            By.XPATH,
+            f"{self._item_xpath(product_name)}//button[contains(@id,'remove')]",
+        )
+        self.wait.until(EC.element_to_be_clickable(button)).click()
+
+    def continue_shopping(self) -> None:
+        self.wait.until(EC.element_to_be_clickable(self._continue_shopping)).click()
+
+    def proceed_to_checkout(self) -> None:
+        self.wait.until(EC.element_to_be_clickable(self._checkout)).click()
+
+    @property
+    def cart_items(self) -> list[WebElement]:
+        return self.driver.find_elements(*self._cart_items)
+
+    def cart_badge_count(self) -> int:
+        return len(self.driver.find_elements(*self._cart_badge))
+
+    def get_product_names(self) -> list[str]:
+        names: list[str] = []
+        for item in self.cart_items:
+            name_el = item.find_element(By.CSS_SELECTOR, ".inventory_item_name")
+            names.append(name_el.text.strip())
+        return names

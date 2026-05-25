@@ -1,5 +1,7 @@
 # UI — Playwright (SauceDemo)
 
+> Same scenarios also run under [Selenium 4](../selenium/) in this repo.
+
 End-to-end tests for [SauceDemo / Swag Labs](https://www.saucedemo.com) using **Playwright**, **Python**, **pytest**, and the **Page Object Model**. Credentials and base URL come from environment variables.
 
 ## Prerequisites
