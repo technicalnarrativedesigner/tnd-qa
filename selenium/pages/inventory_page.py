@@ -29,17 +29,34 @@ class InventoryPage(BasePage):
             By.XPATH,
             f"{self._item_xpath(product_name)}//button[contains(@id,'add-to-cart')]",
         )
-        self.wait.until(EC.element_to_be_clickable(button)).click()
+        self.click_element(button)
+        self.wait.until(
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    f"{self._item_xpath(product_name)}//button[contains(@id,'remove')]",
+                )
+            )
+        )
 
     def remove_item_by_name(self, product_name: str) -> None:
         button = (
             By.XPATH,
             f"{self._item_xpath(product_name)}//button[contains(@id,'remove')]",
         )
-        self.wait.until(EC.element_to_be_clickable(button)).click()
+        self.click_element(button)
+        self.wait.until(
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    f"{self._item_xpath(product_name)}//button[contains(@id,'add-to-cart')]",
+                )
+            )
+        )
 
     def open_cart(self) -> None:
-        self.wait.until(EC.element_to_be_clickable(self._cart_link)).click()
+        self.click_element(self._cart_link)
+        self.wait.until(EC.url_contains("cart.html"))
 
     def logout(self) -> None:
         self.click_element(self._menu_button)

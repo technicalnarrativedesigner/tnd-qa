@@ -24,17 +24,21 @@ class CartPage(BasePage):
         )
 
     def remove_item_by_name(self, product_name: str) -> None:
+        current_count = len(self.cart_items)
         button = (
             By.XPATH,
             f"{self._item_xpath(product_name)}//button[contains(@id,'remove')]",
         )
-        self.wait.until(EC.element_to_be_clickable(button)).click()
+        self.click_element(button)
+        self.wait.until(lambda d: len(self.cart_items) < current_count)
 
     def continue_shopping(self) -> None:
-        self.wait.until(EC.element_to_be_clickable(self._continue_shopping)).click()
+        self.click_element(self._continue_shopping)
+        self.wait.until(EC.url_contains("inventory.html"))
 
     def proceed_to_checkout(self) -> None:
-        self.wait.until(EC.element_to_be_clickable(self._checkout)).click()
+        self.click_element(self._checkout)
+        self.wait.until(EC.url_contains("checkout-step-one.html"))
 
     @property
     def cart_items(self) -> list[WebElement]:

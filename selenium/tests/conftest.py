@@ -34,6 +34,7 @@ def driver() -> WebDriver:
         options.add_argument("--headless=new")
     options.add_argument("--window-size=1280,720")
     options.add_argument("--disable-gpu")
+    options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--no-sandbox")
     browser = webdriver.Chrome(options=options)
     browser.implicitly_wait(0)

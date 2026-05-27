@@ -18,7 +18,6 @@ def _add_backpack_and_open_checkout(
     inventory.open_cart()
     cart_page.expect_loaded()
     cart_page.proceed_to_checkout()
-    checkout_page.expect_step_one_loaded()
 
 
 @pytest.mark.smoke

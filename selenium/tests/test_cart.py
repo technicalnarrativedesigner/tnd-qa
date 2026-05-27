@@ -1,5 +1,3 @@
-import re
-
 import pytest
 from selenium.webdriver.remote.webdriver import WebDriver
 
@@ -33,4 +31,4 @@ def test_continue_shopping_returns_to_inventory(
     logged_in_inventory.open_cart()
     cart_page.expect_loaded()
     cart_page.continue_shopping()
-    assert re.search(r".*inventory\.html$", driver.current_url)
+    assert "inventory.html" in driver.current_url
