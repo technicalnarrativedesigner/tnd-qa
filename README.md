@@ -1,5 +1,7 @@
 # TND QA Portfolio
 
+![CI](https://github.com/technicalnarrativedesigner/tnd-qa/actions/workflows/ci.yml/badge.svg)
+
 QA automation samples in one repo: **browser E2E** (two frameworks) and **REST API** testing.
 
 | Suite | Tool | Target | Folder |
@@ -50,6 +52,20 @@ npm test
 Or import `reqres.collection.json` and `reqres.environment.json` into the Postman app.
 
 Details: [api/postman/README.md](api/postman/README.md)
+
+## CI (GitHub Actions)
+
+Workflow file: [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
+
+Runs three suites on each push/PR to `main` (and manual dispatch):
+- Playwright UI tests from [`ui/`](ui/)
+- Selenium UI tests from [`selenium/`](selenium/)
+- Postman/Newman API tests from [`api/postman/`](api/postman/)
+
+Required GitHub Secret:
+- `REQRES_API_KEY` (used as ReqRes `x-api-key` in the Newman job)
+
+Configure it in: **Repo Settings -> Secrets and variables -> Actions -> New repository secret**
 
 ## Why one repo?
 
