@@ -41,6 +41,16 @@ jobs:
       - name: Run Playwright suite
         run: pytest
 
+      - name: Upload Playwright artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-artifacts
+          path: |
+            ui/test-results
+            ui/playwright-report
+          if-no-files-found: ignore
+
   selenium:
     name: UI (Selenium)
     runs-on: ubuntu-latest
@@ -99,7 +109,19 @@ jobs:
 
       - name: Run Newman suite
         run: |
+          mkdir -p reports
           npx newman run reqres.collection.json \
             -e reqres.environment.example.json \
             --env-var "apiKey=$REQRES_API_KEY" \
-            --env-var "reqresEnv=prod"
+            --env-var "reqresEnv=prod" \
+            --reporters cli,junit,json \
+            --reporter-junit-export reports/newman-junit.xml \
+            --reporter-json-export reports/newman-report.json
+
+      - name: Upload Newman artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: newman-artifacts
+          path: api/postman/reports
+          if-no-files-found: ignore

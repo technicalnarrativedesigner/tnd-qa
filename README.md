@@ -1,78 +1,84 @@
 # TND QA Portfolio
 
-![CI](https://github.com/technicalnarrativedesigner/tnd-qa/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/technicalnarrativedesigner/tnd-qa/actions/workflows/ci.yml/badge.svg?branch=main)
 
-QA automation samples in one repo: **browser E2E** (two frameworks) and **REST API** testing.
+This repository is a **learning and showcase project** for test automation roles.  
+Goal: demonstrate how I design maintainable UI/API automation, manage test environments safely, and run the same suites in local and CI workflows.
 
-| Suite | Tool | Target | Folder |
-|-------|------|--------|--------|
-| **UI (Playwright)** | Playwright + pytest + POM | [SauceDemo](https://www.saucedemo.com) | [`ui/`](ui/) |
-| **UI (Selenium)** | Selenium 4 + pytest + POM | [SauceDemo](https://www.saucedemo.com) | [`selenium/`](selenium/) |
-| **API** | Postman + Newman | [ReqRes](https://reqres.in) | [`api/postman/`](api/postman/) |
+## About This Portfolio
 
-## Quick start
+- **Who this is for**: recruiters, QA leads, and SDET interviewers evaluating practical automation skills
+- **What this demonstrates**: Page Object Pattern, API assertions, env/secrets management, and CI execution
+- **Why two UI frameworks**: Playwright (modern default) and Selenium 4 (still common in production teams)
 
-### UI (Playwright)
+| Suite | Tool | Target | Folder | What it proves |
+|-------|------|--------|--------|----------------|
+| **UI (Playwright)** | Playwright + pytest + POM | [SauceDemo](https://www.saucedemo.com) | [`ui/`](ui/) | Modern E2E design with readable page objects and stable waits |
+| **UI (Selenium)** | Selenium 4 + pytest + POM | [SauceDemo](https://www.saucedemo.com) | [`selenium/`](selenium/) | Legacy-compatible E2E coverage with explicit synchronization |
+| **API** | Postman + Newman | [ReqRes](https://reqres.in) | [`api/postman/`](api/postman/) | HTTP assertions, auth handling, and CLI/API CI integration |
 
+## 30-Second Run (Recruiter Quick Check)
+
+### Playwright smoke
 ```bash
-cd ui
-python -m venv .venv && source .venv/bin/activate
-pip install -e .
-playwright install chromium
-cp .env.example .env
-pytest
+cd ui && python -m venv .venv && source .venv/bin/activate && pip install -e . && playwright install chromium && cp .env.example .env && pytest -m smoke
 ```
 
-Details: [ui/README.md](ui/README.md)
-
-### UI (Selenium)
-
-Same SauceDemo scenarios as Playwright — for teams still on Selenium 4.
-
+### Selenium smoke
 ```bash
-cd selenium
-python -m venv .venv && source .venv/bin/activate
-pip install -e .
-cp .env.example .env
-pytest
+cd selenium && python -m venv .venv && source .venv/bin/activate && pip install -e . && cp .env.example .env && pytest -m smoke
 ```
 
-Details: [selenium/README.md](selenium/README.md)
-
-### API (Postman / Newman)
-
+### Postman/Newman API
 ```bash
-cd api/postman
-cp reqres.environment.example.json reqres.environment.json
-# Edit reqres.environment.json — set apiKey from https://app.reqres.in
-npm install
-npm test
+cd api/postman && npm install && REQRES_API_KEY=your_key npm test
 ```
 
-Or import `reqres.collection.json` and `reqres.environment.json` into the Postman app.
-
-Details: [api/postman/README.md](api/postman/README.md)
+Detailed setup:
+- [ui/README.md](ui/README.md)
+- [selenium/README.md](selenium/README.md)
+- [api/postman/README.md](api/postman/README.md)
 
 ## CI (GitHub Actions)
 
-Workflow file: [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
+Workflow: [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
 
-Runs three suites on each push/PR to `main` (and manual dispatch):
-- Playwright UI tests from [`ui/`](ui/)
-- Selenium UI tests from [`selenium/`](selenium/)
-- Postman/Newman API tests from [`api/postman/`](api/postman/)
+Runs on push/PR to `main` and manual dispatch:
+- Playwright UI suite (`ui/`)
+- Selenium UI suite (`selenium/`)
+- Newman API suite (`api/postman/`)
 
-Required GitHub Secret:
-- `REQRES_API_KEY` (used as ReqRes `x-api-key` in the Newman job)
+Required GitHub secret:
+- `REQRES_API_KEY` (ReqRes `x-api-key` for API tests)
 
-Configure it in: **Repo Settings -> Secrets and variables -> Actions -> New repository secret**
+Optional but supported:
+- `STANDARD_USER`
+- `STANDARD_PASSWORD`
+- `LOCKED_OUT_USER`
+- `LOCKED_OUT_PASSWORD`
 
-## Why one repo?
+CI uploads:
+- Playwright run artifacts (`test-results` and report folder when present)
+- Newman report artifacts (`junit`, `json`)
 
-- Single portfolio link for recruiters
-- Shared conventions (env files, README structure)
-- Playwright and Selenium UI suites are parallel (same tests, different runners)
-- UI and API skills side by side without mixing Python page objects with Postman JSON
+## Test Strategy
+
+See [TESTING.md](TESTING.md) for:
+- smoke vs regression intent
+- scope choices and trade-offs
+- out-of-scope items kept for future iterations
+
+## Interview Talking Points
+
+- **Playwright vs Selenium**: auto-waiting vs explicit waits, debugging ergonomics, and reliability trade-offs
+- **POM structure**: why selectors/actions stay in page objects while assertions stay in tests
+- **API auth adaptation**: updated ReqRes coverage after `x-api-key` requirement changes
+- **Environment management**: local `.env` + GitHub Secrets in CI (no credentials committed to git)
+- **Engineering mindset**: this repo is intentionally built as both a learning track and a production-style showcase
+
+## Optional Visual Demo
+
+Add one screenshot or short GIF here later (local green run or Actions green check) to make scanning faster for reviewers.
 
 ## License
 
