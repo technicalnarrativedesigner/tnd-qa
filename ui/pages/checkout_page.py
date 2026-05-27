@@ -4,6 +4,8 @@ from pages.base_page import BasePage
 
 
 class CheckoutPage(BasePage):
+    """Checkout steps: customer info, overview, and completion actions."""
+
     def __init__(self, page: Page, base_url: str) -> None:
         super().__init__(page, base_url)
         self._first_name: Locator = page.locator("#first-name")
@@ -29,6 +31,7 @@ class CheckoutPage(BasePage):
         last_name: str,
         postal_code: str,
     ) -> None:
+        # Keep field entry in one method so tests read like business flow.
         self._first_name.fill(first_name)
         self._last_name.fill(last_name)
         self._postal_code.fill(postal_code)

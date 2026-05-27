@@ -4,6 +4,8 @@ from pages.base_page import BasePage
 
 
 class LoginPage(BasePage):
+    """Actions/selectors for the SauceDemo login screen."""
+
     PATH = "/"
 
     def __init__(self, page: Page, base_url: str) -> None:
@@ -16,6 +18,7 @@ class LoginPage(BasePage):
         self.goto(self.PATH)
 
     def login(self, username: str, password: str) -> None:
+        # Single login entry-point used by positive and negative auth tests.
         self._username.fill(username)
         self._password.fill(password)
         self._submit.click()

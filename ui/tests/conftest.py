@@ -16,6 +16,7 @@ load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
 @pytest.fixture(scope="session")
 def settings() -> Settings:
+    # Centralized runtime config so tests never hardcode credentials.
     return Settings(
         base_url=os.getenv("BASE_URL", "https://www.saucedemo.com"),
         standard_user=os.environ["STANDARD_USER"],
@@ -52,6 +53,7 @@ def logged_in_inventory(
     login_page: LoginPage,
     inventory_page: InventoryPage,
 ) -> InventoryPage:
+    # Common precondition fixture for tests starting from authenticated state.
     login_page.open()
     login_page.login(settings.standard_user, settings.standard_password)
     inventory_page.expect_loaded()

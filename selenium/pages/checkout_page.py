@@ -7,6 +7,8 @@ from pages.base_page import BasePage
 
 
 class CheckoutPage(BasePage):
+    """Checkout step-one/step-two/complete interactions for Selenium suite."""
+
     def __init__(self, driver: WebDriver, base_url: str) -> None:
         super().__init__(driver, base_url)
         self._first_name = (By.ID, "first-name")
@@ -39,18 +41,21 @@ class CheckoutPage(BasePage):
 
     def continue_to_overview(self) -> None:
         self.click_element(self._continue)
+        # Continue can either navigate to step two or show validation error.
         self.wait.until(
             lambda d: "checkout-step-two.html" in d.current_url
             or d.find_elements(*self._error)
         )
 
     def cancel_checkout(self) -> None:
+        # Cancel from step one should route back to cart.
         self.expect_step_one_loaded()
         cancel = self.wait.until(EC.visibility_of_element_located(self._cancel))
         self.driver.execute_script("arguments[0].click();", cancel)
         self.wait.until(EC.url_contains("cart.html"))
 
     def finish_order(self) -> None:
+        # Finish button exists on overview page; enforce precondition first.
         self.expect_step_two_loaded()
         finish = self.wait.until(EC.visibility_of_element_located(self._finish))
         self.driver.execute_script("arguments[0].click();", finish)

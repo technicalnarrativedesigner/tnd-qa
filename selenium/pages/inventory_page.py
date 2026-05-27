@@ -7,6 +7,8 @@ from pages.base_page import BasePage
 
 
 class InventoryPage(BasePage):
+    """Inventory actions: product toggles, cart navigation, and logout."""
+
     def __init__(self, driver: WebDriver, base_url: str) -> None:
         super().__init__(driver, base_url)
         self._cart_link = (By.CSS_SELECTOR, ".shopping_cart_link")
@@ -19,6 +21,7 @@ class InventoryPage(BasePage):
         self.wait.until(EC.url_contains("inventory.html"))
 
     def _item_xpath(self, product_name: str) -> str:
+        # Build a product-scoped XPath so actions target only one card.
         return (
             f"//div[contains(@class,'inventory_item')]"
             f"[.//div[contains(@class,'inventory_item_name') and normalize-space()='{product_name}']]"
@@ -30,6 +33,7 @@ class InventoryPage(BasePage):
             f"{self._item_xpath(product_name)}//button[contains(@id,'add-to-cart')]",
         )
         self.click_element(button)
+        # Verify toggle happened before moving on to avoid race conditions.
         self.wait.until(
             EC.presence_of_element_located(
                 (
@@ -59,6 +63,7 @@ class InventoryPage(BasePage):
         self.wait.until(EC.url_contains("cart.html"))
 
     def logout(self) -> None:
+        # Sidebar link is hidden until menu opens; click in two stable steps.
         self.click_element(self._menu_button)
         logout = self.wait.until(EC.element_to_be_clickable(self._logout_link))
         self.driver.execute_script("arguments[0].click();", logout)

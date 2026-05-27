@@ -4,6 +4,8 @@ from pages.base_page import BasePage
 
 
 class CartPage(BasePage):
+    """Cart page actions used by cart and checkout tests."""
+
     def __init__(self, page: Page, base_url: str) -> None:
         super().__init__(page, base_url)
         self._cart_items: Locator = page.locator(".cart_item")
@@ -15,6 +17,7 @@ class CartPage(BasePage):
         self.page.wait_for_url("**/cart.html")
 
     def remove_item_by_name(self, product_name: str) -> None:
+        # Remove within a specific cart row to avoid strict-mode locator conflicts.
         item = self._cart_items.filter(has=self.page.get_by_text(product_name, exact=True))
         item.get_by_role("button", name="Remove").click()
 

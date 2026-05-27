@@ -7,6 +7,8 @@ from pages.base_page import BasePage
 
 
 class LoginPage(BasePage):
+    """Actions/selectors for SauceDemo login with Selenium."""
+
     PATH = "/"
 
     def __init__(self, driver: WebDriver, base_url: str) -> None:
@@ -20,6 +22,7 @@ class LoginPage(BasePage):
         self.goto(self.PATH)
 
     def login(self, username: str, password: str) -> None:
+        # Used by both happy-path and auth-negative tests.
         self.wait.until(EC.visibility_of_element_located(self._username))
         self.driver.find_element(*self._username).clear()
         self.driver.find_element(*self._username).send_keys(username)

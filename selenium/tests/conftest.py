@@ -18,6 +18,7 @@ load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
 @pytest.fixture(scope="session")
 def settings() -> Settings:
+    # One config source for local runs and CI env overrides.
     return Settings(
         base_url=os.getenv("BASE_URL", "https://www.saucedemo.com"),
         standard_user=os.environ["STANDARD_USER"],
@@ -29,6 +30,7 @@ def settings() -> Settings:
 
 @pytest.fixture
 def driver() -> WebDriver:
+    # CI-safe Chrome defaults: headless + shm workaround + no sandbox.
     options = Options()
     if os.getenv("HEADED", "").lower() not in ("1", "true", "yes"):
         options.add_argument("--headless=new")
@@ -69,6 +71,7 @@ def logged_in_inventory(
     login_page: LoginPage,
     inventory_page: InventoryPage,
 ) -> InventoryPage:
+    # Reusable authenticated starting point for non-auth tests.
     login_page.open()
     login_page.login(settings.standard_user, settings.standard_password)
     inventory_page.expect_loaded()

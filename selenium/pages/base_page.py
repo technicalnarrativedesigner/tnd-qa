@@ -10,6 +10,8 @@ Locator = Tuple[str, str]
 
 
 class BasePage:
+    """Shared Selenium page helpers with explicit waits and stable interactions."""
+
     DEFAULT_TIMEOUT = 15
 
     def __init__(self, driver: WebDriver, base_url: str) -> None:
@@ -24,7 +26,7 @@ class BasePage:
             self.driver.get(f"{self.base_url}{path}")
 
     def fill_input(self, locator: Locator, value: str) -> None:
-        """Set value on React-controlled inputs (clear() alone is unreliable)."""
+        # React inputs can ignore clear(); force value updates + events.
         field = self.wait.until(EC.element_to_be_clickable(locator))
         field.click()
         field.send_keys(Keys.CONTROL, "a", Keys.BACKSPACE)
@@ -47,6 +49,7 @@ class BasePage:
         )
 
     def click_element(self, locator: Locator) -> None:
+        # JS click reduces flakiness in headless/overlay-heavy CI environments.
         element = self.wait.until(EC.element_to_be_clickable(locator))
         self.driver.execute_script(
             "arguments[0].scrollIntoView({block: 'center'}); arguments[0].click();",

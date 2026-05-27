@@ -7,6 +7,8 @@ from pages.base_page import BasePage
 
 
 class CartPage(BasePage):
+    """Cart page operations used by cart-focused and checkout-flow tests."""
+
     def __init__(self, driver: WebDriver, base_url: str) -> None:
         super().__init__(driver, base_url)
         self._cart_items = (By.CSS_SELECTOR, ".cart_item")
@@ -24,6 +26,7 @@ class CartPage(BasePage):
         )
 
     def remove_item_by_name(self, product_name: str) -> None:
+        # Assert row count drops to confirm remove click actually applied.
         current_count = len(self.cart_items)
         button = (
             By.XPATH,
@@ -48,6 +51,7 @@ class CartPage(BasePage):
         return len(self.driver.find_elements(*self._cart_badge))
 
     def get_product_names(self) -> list[str]:
+        # Return visible cart names for clean assertions in tests.
         names: list[str] = []
         for item in self.cart_items:
             name_el = item.find_element(By.CSS_SELECTOR, ".inventory_item_name")
