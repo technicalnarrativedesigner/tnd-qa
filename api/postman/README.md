@@ -2,6 +2,17 @@
 
 REST API checks for [ReqRes](https://reqres.in): status codes, JSON structure, login/register flows, and CRUD-style user operations.
 
+This suite validates the API puzzle layer behind UI behavior:
+- request/response contracts
+- auth and validation outcomes
+- CRUD-like endpoint behavior under expected conditions
+
+## Latest green run (proof)
+
+![Postman Newman green run](../../images/postman_sanitized.png)
+
+This run shows requests, scripts, and assertions all passing in one execution.
+
 **Important:** ReqRes now requires an API key on every request. The old public API no longer works without authentication (you will see `401` / `missing_api_key`).
 
 ## Get an API key (one-time, free)

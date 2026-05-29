@@ -2,7 +2,18 @@
 
 > Same scenarios also run under [Selenium 4](../selenium/) in this repo.
 
-End-to-end tests for [SauceDemo / Swag Labs](https://www.saucedemo.com) using **Playwright**, **Python**, **pytest**, and the **Page Object Model**. Credentials and base URL come from environment variables.
+End-to-end tests for [SauceDemo / Swag Labs](https://www.saucedemo.com) using **Playwright**, **Python**, **pytest**, and the **Page Object Model**.
+
+This suite tells the core quality story:
+- can users authenticate correctly?
+- does cart state stay consistent?
+- can checkout finish or fail with meaningful validation?
+
+## Latest green run (proof)
+
+![Playwright suite green run](../images/playwright_sanitized.png)
+
+This result proves the Playwright puzzle-set is currently solved end-to-end (auth, inventory, cart, checkout).
 
 ## Prerequisites
 

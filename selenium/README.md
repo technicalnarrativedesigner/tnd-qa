@@ -2,6 +2,17 @@
 
 Same SauceDemo coverage as the [Playwright suite](../ui/), implemented with **Selenium 4** (Python), **pytest**, and the **Page Object Model**. Uses Selenium Manager to resolve ChromeDriver automatically — no manual driver downloads.
 
+This suite mirrors the same quality puzzles in a Selenium-first style:
+- auth boundaries
+- cart state transitions
+- checkout success/error paths
+
+## Latest green run (proof)
+
+![Selenium suite green run](../images/selenium_sanitized.png)
+
+This gives legacy-stack confidence: the same behavior contract is validated outside Playwright as well.
+
 ## Prerequisites
 
 - Python 3.10+
