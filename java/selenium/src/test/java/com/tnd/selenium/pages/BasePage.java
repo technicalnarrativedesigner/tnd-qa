@@ -61,8 +61,22 @@ public class BasePage {
      */
     protected void fill(By locator, String value) {
         WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+        element.click();
         element.clear();
         element.sendKeys(value);
+
+        // Some CI/headless runs on React-like forms can drop sendKeys updates.
+        // If value did not stick, force-set value and dispatch input/change events.
+        String currentValue = element.getAttribute("value");
+        if (currentValue == null || !currentValue.equals(value)) {
+            ((JavascriptExecutor) driver).executeScript(
+                    "arguments[0].value = arguments[1];"
+                            + "arguments[0].dispatchEvent(new Event('input', { bubbles: true }));"
+                            + "arguments[0].dispatchEvent(new Event('change', { bubbles: true }));",
+                    element,
+                    value
+            );
+        }
     }
 
     /**
