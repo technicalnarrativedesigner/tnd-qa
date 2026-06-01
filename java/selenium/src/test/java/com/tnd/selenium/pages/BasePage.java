@@ -1,9 +1,5 @@
 package com.tnd.selenium.pages;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.time.Duration;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -18,10 +14,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  * <p>Purpose: centralize wait/click/fill primitives so page classes stay focused on behavior.
  */
 public class BasePage {
-    private static final String DEBUG_LOG_PATH =
-            "/home/technicalnarrativedesigner/Encrypted/Projects/TND/tnd-qa/.cursor/debug-3ba741.log";
-    private static final String DEBUG_SESSION_ID = "3ba741";
-
     protected final WebDriver driver;
     protected final WebDriverWait wait;
     protected final String baseUrl;
@@ -79,53 +71,4 @@ public class BasePage {
         }
     }
 
-    /**
-     * Writes one NDJSON debug event for runtime hypothesis validation.
-     */
-    protected void debugLog(String runId, String hypothesisId, String location, String message, String dataJson) {
-        String line = "{\"sessionId\":\""
-                + jsonEscape(DEBUG_SESSION_ID)
-                + "\",\"runId\":\""
-                + jsonEscape(runId)
-                + "\",\"hypothesisId\":\""
-                + jsonEscape(hypothesisId)
-                + "\",\"location\":\""
-                + jsonEscape(location)
-                + "\",\"message\":\""
-                + jsonEscape(message)
-                + "\",\"data\":"
-                + dataJson
-                + ",\"timestamp\":"
-                + System.currentTimeMillis()
-                + "}";
-        try {
-            Path logPath = Path.of(DEBUG_LOG_PATH);
-            if (logPath.getParent() != null) {
-                Files.createDirectories(logPath.getParent());
-            }
-            Files.writeString(
-                    logPath,
-                    line + System.lineSeparator(),
-                    StandardOpenOption.CREATE,
-                    StandardOpenOption.APPEND
-            );
-        } catch (IOException ignored) {
-            // Never fail the test because of debug logging.
-        }
-        System.out.println(line);
-    }
-
-    /**
-     * Escapes string content for JSON literals in debug events.
-     */
-    protected String jsonEscape(String value) {
-        if (value == null) {
-            return "";
-        }
-        return value
-                .replace("\\", "\\\\")
-                .replace("\"", "\\\"")
-                .replace("\n", "\\n")
-                .replace("\r", "\\r");
-    }
 }

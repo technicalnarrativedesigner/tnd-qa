@@ -44,7 +44,25 @@ class PlaywrightFlowsTest {
         // Build an isolated browser context per test for deterministic state.
         config = TestConfig.load();
         playwright = Playwright.create();
-        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(!config.headed()));
+        String browserName = System.getenv().getOrDefault("BROWSER", "chromium").toLowerCase();
+        BrowserType browserType;
+        switch (browserName) {
+            case "firefox":
+                browserType = playwright.firefox();
+                break;
+            case "webkit":
+                browserType = playwright.webkit();
+                break;
+            case "chromium":
+            case "chrome":
+                browserType = playwright.chromium();
+                break;
+            default:
+                throw new IllegalArgumentException(
+                        "Unsupported BROWSER='" + browserName + "'. Use chromium, firefox, or webkit."
+                );
+        }
+        browser = browserType.launch(new BrowserType.LaunchOptions().setHeadless(!config.headed()));
         context = browser.newContext();
         page = context.newPage();
 

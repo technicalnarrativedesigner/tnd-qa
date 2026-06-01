@@ -27,14 +27,16 @@ cd ui
 python -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -e .
-playwright install chromium
+playwright install --with-deps chromium firefox webkit
 cp .env.example .env
 ```
 
 ## Run tests
 
 ```bash
-pytest                    # full suite (headless Chromium)
+pytest --browser chromium # Chromium
+pytest --browser firefox  # Firefox
+pytest --browser webkit   # WebKit (Safari-like on Linux)
 pytest -m smoke           # critical path only
 pytest -m regression      # broader coverage
 pytest --headed           # watch the browser while debugging
@@ -54,8 +56,12 @@ From repo root:
 ```bash
 cp docker/.env.example docker/.env
 docker compose build ui_playwright
-docker compose run --rm ui_playwright
+docker compose run --rm -e BROWSER=chromium ui_playwright
+docker compose run --rm -e BROWSER=firefox ui_playwright
+docker compose run --rm -e BROWSER=webkit ui_playwright
 ```
+
+WebKit note: Linux WebKit is useful Safari-like coverage, but not identical to Safari on macOS.
 
 ## Layout
 

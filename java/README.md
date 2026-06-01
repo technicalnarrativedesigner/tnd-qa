@@ -24,9 +24,14 @@ From repo root:
 ```bash
 cp docker/.env.example docker/.env
 docker compose build java_playwright java_selenium
-docker compose run --rm java_playwright
-docker compose run --rm java_selenium
+docker compose run --rm -e BROWSER=chromium java_playwright
+docker compose run --rm -e BROWSER=firefox java_playwright
+docker compose run --rm -e BROWSER=webkit java_playwright
+docker compose run --rm -e SELENIUM_BROWSER=chromium java_selenium
+docker compose run --rm -e SELENIUM_BROWSER=firefox java_selenium
 ```
+
+WebKit note: Linux WebKit provides Safari-like coverage for Playwright, but it is not a full replacement for native Safari/macOS validation.
 
 ## Proof of Java runs
 

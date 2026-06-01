@@ -11,13 +11,11 @@ import com.tnd.selenium.pages.LoginPage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 
 /**
  * Minimal Selenium Java flow suite.
@@ -42,71 +40,37 @@ class SeleniumFlowsTest {
     void setUp() {
         // Keep per-test browser sessions isolated, similar to pytest fixtures.
         config = TestConfig.load();
-        String chromeBinary = System.getenv().getOrDefault("CHROME_BIN", "/usr/bin/chromium");
-        String chromeVersion = commandOutput(chromeBinary + " --version");
-        String driverVersion = commandOutput("chromedriver --version");
+        String browserName = System.getenv().getOrDefault("SELENIUM_BROWSER", "chromium").toLowerCase();
+        boolean headed = config.headed();
 
-        ChromeOptions options = new ChromeOptions();
-        options.setBinary(chromeBinary);
-        if (!config.headed()) {
-            options.addArguments("--headless=new");
-        }
-        options.addArguments("--window-size=1280,720", "--disable-gpu", "--disable-dev-shm-usage", "--no-sandbox");
-        // #region agent log
-        System.out.println("{\"sessionId\":\"3ba741\",\"runId\":\"pre-fix\",\"hypothesisId\":\"H3\",\"location\":\"SeleniumFlowsTest.setUp\",\"message\":\"Java Selenium startup params\",\"data\":{\"chromeBinary\":\""
-                + chromeBinary
-                + "\",\"headed\":"
-                + config.headed()
-                + ",\"chromeVersion\":\""
-                + chromeVersion.replace("\"", "\\\"")
-                + "\",\"driverVersion\":\""
-                + driverVersion.replace("\"", "\\\"")
-                + "},\"timestamp\":"
-                + System.currentTimeMillis()
-                + "}");
-        // #endregion
-        try {
+        if ("firefox".equals(browserName)) {
+            FirefoxOptions options = new FirefoxOptions();
+            String firefoxBinary = System.getenv("FIREFOX_BIN");
+            if (firefoxBinary != null && !firefoxBinary.isBlank()) {
+                options.setBinary(firefoxBinary);
+            }
+            if (!headed) {
+                options.addArguments("-headless");
+            }
+            driver = new FirefoxDriver(options);
+        } else if ("chromium".equals(browserName) || "chrome".equals(browserName)) {
+            ChromeOptions options = new ChromeOptions();
+            String chromeBinary = System.getenv().getOrDefault("CHROME_BIN", "/usr/bin/chromium");
+            options.setBinary(chromeBinary);
+            if (!headed) {
+                options.addArguments("--headless=new");
+            }
+            options.addArguments("--window-size=1280,720", "--disable-gpu", "--disable-dev-shm-usage", "--no-sandbox");
             driver = new ChromeDriver(options);
-        } catch (SessionNotCreatedException e) {
-            // #region agent log
-            System.out.println("{\"sessionId\":\"3ba741\",\"runId\":\"pre-fix\",\"hypothesisId\":\"H4\",\"location\":\"SeleniumFlowsTest.setUp\",\"message\":\"Java Selenium session creation failed\",\"data\":{\"error\":\""
-                    + e.getClass().getSimpleName()
-                    + "\",\"message\":\""
-                    + e.getMessage().replace("\"", "\\\"").replace("\n", "\\n")
-                    + "\"},\"timestamp\":"
-                    + System.currentTimeMillis()
-                    + "}");
-            // #endregion
-            throw e;
-        } catch (WebDriverException e) {
-            // #region agent log
-            System.out.println("{\"sessionId\":\"3ba741\",\"runId\":\"pre-fix\",\"hypothesisId\":\"H5\",\"location\":\"SeleniumFlowsTest.setUp\",\"message\":\"Java Selenium generic webdriver failure\",\"data\":{\"error\":\""
-                    + e.getClass().getSimpleName()
-                    + "\",\"message\":\""
-                    + e.getMessage().replace("\"", "\\\"").replace("\n", "\\n")
-                    + "\"},\"timestamp\":"
-                    + System.currentTimeMillis()
-                    + "}");
-            // #endregion
-            throw e;
+        } else {
+            throw new IllegalArgumentException(
+                    "Unsupported SELENIUM_BROWSER='" + browserName + "'. Use chromium or firefox."
+            );
         }
         loginPage = new LoginPage(driver, config.baseUrl());
         inventoryPage = new InventoryPage(driver, config.baseUrl());
         cartPage = new CartPage(driver, config.baseUrl());
         checkoutPage = new CheckoutPage(driver, config.baseUrl());
-    }
-
-    private String commandOutput(String command) {
-        try {
-            Process process = new ProcessBuilder("sh", "-c", command).start();
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-                String line = reader.readLine();
-                process.waitFor();
-                return line == null ? "" : line.trim();
-            }
-        } catch (Exception e) {
-            return "unavailable";
-        }
     }
 
     /**

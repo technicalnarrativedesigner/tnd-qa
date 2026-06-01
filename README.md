@@ -110,10 +110,16 @@ Update `docker/.env` with your real values (especially `REQRES_API_KEY`), then r
 docker compose build
 
 # run one suite
-docker compose run --rm ui_playwright
-docker compose run --rm ui_selenium
-docker compose run --rm java_playwright
-docker compose run --rm java_selenium
+docker compose run --rm -e BROWSER=chromium ui_playwright
+docker compose run --rm -e BROWSER=firefox ui_playwright
+docker compose run --rm -e BROWSER=webkit ui_playwright
+docker compose run --rm -e SELENIUM_BROWSER=chromium ui_selenium
+docker compose run --rm -e SELENIUM_BROWSER=firefox ui_selenium
+docker compose run --rm -e BROWSER=chromium java_playwright
+docker compose run --rm -e BROWSER=firefox java_playwright
+docker compose run --rm -e BROWSER=webkit java_playwright
+docker compose run --rm -e SELENIUM_BROWSER=chromium java_selenium
+docker compose run --rm -e SELENIUM_BROWSER=firefox java_selenium
 docker compose run --rm api_newman
 ```
 
@@ -132,11 +138,14 @@ docker compose run --rm ui_playwright \
 Workflow: [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
 
 Runs on push/PR to `main` and manual dispatch:
-- Playwright UI suite (`ui/`)
-- Selenium UI suite (`selenium/`)
-- Java Playwright UI suite (`java/playwright/`)
-- Java Selenium UI suite (`java/selenium/`)
+- Playwright UI suite (`ui/`) on `chromium`, `firefox`, `webkit`
+- Selenium UI suite (`selenium/`) on `chromium`, `firefox`
+- Java Playwright UI suite (`java/playwright/`) on `chromium`, `firefox`, `webkit`
+- Java Selenium UI suite (`java/selenium/`) on `chromium`, `firefox`
 - Newman API suite (`api/postman/`)
+
+Browser note:
+- Playwright `webkit` on Linux is Safari-like coverage, not true Safari/macOS WebKit.
 
 Required GitHub secret:
 - `REQRES_API_KEY` (ReqRes `x-api-key` for API tests)

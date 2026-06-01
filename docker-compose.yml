@@ -11,6 +11,7 @@ services:
       STANDARD_PASSWORD: ${STANDARD_PASSWORD:-secret_sauce}
       LOCKED_OUT_USER: ${LOCKED_OUT_USER:-locked_out_user}
       LOCKED_OUT_PASSWORD: ${LOCKED_OUT_PASSWORD:-secret_sauce}
+      BROWSER: ${BROWSER:-chromium}
     shm_size: "1gb"
 
   ui_selenium:
@@ -26,6 +27,7 @@ services:
       LOCKED_OUT_USER: ${LOCKED_OUT_USER:-locked_out_user}
       LOCKED_OUT_PASSWORD: ${LOCKED_OUT_PASSWORD:-secret_sauce}
       HEADED: ${HEADED:-false}
+      SELENIUM_BROWSER: ${SELENIUM_BROWSER:-chromium}
     shm_size: "1gb"
 
   java_playwright:
@@ -41,6 +43,7 @@ services:
       LOCKED_OUT_USER: ${LOCKED_OUT_USER:-locked_out_user}
       LOCKED_OUT_PASSWORD: ${LOCKED_OUT_PASSWORD:-secret_sauce}
       HEADED: ${HEADED:-false}
+      BROWSER: ${BROWSER:-chromium}
     shm_size: "1gb"
 
   java_selenium:
@@ -56,6 +59,7 @@ services:
       LOCKED_OUT_USER: ${LOCKED_OUT_USER:-locked_out_user}
       LOCKED_OUT_PASSWORD: ${LOCKED_OUT_PASSWORD:-secret_sauce}
       HEADED: ${HEADED:-false}
+      SELENIUM_BROWSER: ${SELENIUM_BROWSER:-chromium}
     shm_size: "1gb"
 
   api_newman:

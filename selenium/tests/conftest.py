@@ -4,7 +4,8 @@ from pathlib import Path
 import pytest
 from dotenv import load_dotenv
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.remote.webdriver import WebDriver
 
 from config import Settings
@@ -30,15 +31,35 @@ def settings() -> Settings:
 
 @pytest.fixture
 def driver() -> WebDriver:
-    # CI-safe Chrome defaults: headless + shm workaround + no sandbox.
-    options = Options()
-    if os.getenv("HEADED", "").lower() not in ("1", "true", "yes"):
-        options.add_argument("--headless=new")
-    options.add_argument("--window-size=1280,720")
-    options.add_argument("--disable-gpu")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--no-sandbox")
-    browser = webdriver.Chrome(options=options)
+    # Browser is configurable for cross-browser CI and Docker runs.
+    browser_name = os.getenv("SELENIUM_BROWSER", "chromium").lower()
+    headed = os.getenv("HEADED", "").lower() in ("1", "true", "yes")
+
+    if browser_name in ("chromium", "chrome"):
+        options = ChromeOptions()
+        chrome_bin = os.getenv("CHROME_BIN")
+        if chrome_bin:
+            options.binary_location = chrome_bin
+        if not headed:
+            options.add_argument("--headless=new")
+        options.add_argument("--window-size=1280,720")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--no-sandbox")
+        browser = webdriver.Chrome(options=options)
+    elif browser_name == "firefox":
+        options = FirefoxOptions()
+        firefox_bin = os.getenv("FIREFOX_BIN")
+        if firefox_bin:
+            options.binary_location = firefox_bin
+        if not headed:
+            options.add_argument("-headless")
+        browser = webdriver.Firefox(options=options)
+    else:
+        raise ValueError(
+            f"Unsupported SELENIUM_BROWSER='{browser_name}'. Use 'chromium' or 'firefox'."
+        )
+
     browser.implicitly_wait(0)
     yield browser
     browser.quit()

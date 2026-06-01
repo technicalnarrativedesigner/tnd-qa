@@ -9,8 +9,12 @@ on:
 
 jobs:
   playwright:
-    name: UI (Playwright)
+    name: UI (Playwright, ${{ matrix.browser }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
     defaults:
       run:
         working-directory: ui
@@ -34,26 +38,30 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e .
 
-      - name: Install Playwright Chromium
+      - name: Install Playwright browser
         run: |
-          python -m playwright install --with-deps chromium
+          python -m playwright install --with-deps ${{ matrix.browser }}
 
       - name: Run Playwright suite
-        run: pytest
+        run: pytest --browser ${{ matrix.browser }}
 
       - name: Upload Playwright artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-artifacts
+          name: playwright-artifacts-${{ matrix.browser }}
           path: |
             ui/test-results
             ui/playwright-report
           if-no-files-found: ignore
 
   selenium:
-    name: UI (Selenium)
+    name: UI (Selenium, ${{ matrix.browser }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox]
     defaults:
       run:
         working-directory: selenium
@@ -63,6 +71,7 @@ jobs:
       STANDARD_PASSWORD: ${{ secrets.STANDARD_PASSWORD }}
       LOCKED_OUT_USER: ${{ secrets.LOCKED_OUT_USER }}
       LOCKED_OUT_PASSWORD: ${{ secrets.LOCKED_OUT_PASSWORD }}
+      SELENIUM_BROWSER: ${{ matrix.browser }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -71,6 +80,10 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+
+      - name: Set up Firefox
+        if: matrix.browser == 'firefox'
+        uses: browser-actions/setup-firefox@v1
 
       - name: Install dependencies
         run: |
@@ -81,8 +94,12 @@ jobs:
         run: pytest
 
   java_playwright:
-    name: UI (Java Playwright)
+    name: UI (Java Playwright, ${{ matrix.browser }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
     defaults:
       run:
         working-directory: java/playwright
@@ -93,6 +110,7 @@ jobs:
       LOCKED_OUT_USER: ${{ secrets.LOCKED_OUT_USER }}
       LOCKED_OUT_PASSWORD: ${{ secrets.LOCKED_OUT_PASSWORD }}
       HEADED: false
+      BROWSER: ${{ matrix.browser }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -111,13 +129,17 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: java-playwright-surefire
+          name: java-playwright-surefire-${{ matrix.browser }}
           path: java/playwright/target/surefire-reports
           if-no-files-found: ignore
 
   java_selenium:
-    name: UI (Java Selenium)
+    name: UI (Java Selenium, ${{ matrix.browser }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox]
     defaults:
       run:
         working-directory: java/selenium
@@ -128,6 +150,7 @@ jobs:
       LOCKED_OUT_USER: ${{ secrets.LOCKED_OUT_USER }}
       LOCKED_OUT_PASSWORD: ${{ secrets.LOCKED_OUT_PASSWORD }}
       HEADED: false
+      SELENIUM_BROWSER: ${{ matrix.browser }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -139,6 +162,10 @@ jobs:
           java-version: "17"
           cache: maven
 
+      - name: Set up Firefox
+        if: matrix.browser == 'firefox'
+        uses: browser-actions/setup-firefox@v1
+
       - name: Run Java Selenium suite
         run: mvn test
 
@@ -146,7 +173,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: java-selenium-surefire
+          name: java-selenium-surefire-${{ matrix.browser }}
           path: java/selenium/target/surefire-reports
           if-no-files-found: ignore
 

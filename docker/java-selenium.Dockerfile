@@ -4,6 +4,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         chromium \
         chromium-driver \
+        firefox-esr \
         libglib2.0-0 \
         libnss3 \
         libnspr4 \
@@ -29,6 +30,7 @@ RUN apt-get update \
 ENV JAVA_HOME=/opt/java/openjdk
 ENV CHROME_BIN=/usr/bin/chromium
 ENV CHROMEDRIVER=/usr/bin/chromedriver
+ENV FIREFOX_BIN=/usr/bin/firefox-esr
 
 WORKDIR /app/java/selenium
 

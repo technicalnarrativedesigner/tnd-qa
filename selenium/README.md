@@ -31,7 +31,8 @@ cp .env.example .env
 ## Run tests
 
 ```bash
-pytest                    # headless Chrome (default)
+pytest                                 # headless Chromium (default)
+SELENIUM_BROWSER=firefox pytest        # Firefox
 pytest -m smoke           # critical path only
 pytest -m regression      # broader coverage
 HEADED=1 pytest           # visible browser window
@@ -44,7 +45,8 @@ From repo root:
 ```bash
 cp docker/.env.example docker/.env
 docker compose build ui_selenium
-docker compose run --rm ui_selenium
+docker compose run --rm -e SELENIUM_BROWSER=chromium ui_selenium
+docker compose run --rm -e SELENIUM_BROWSER=firefox ui_selenium
 ```
 
 ## Layout
