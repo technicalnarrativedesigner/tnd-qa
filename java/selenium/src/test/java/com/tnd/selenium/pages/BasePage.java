@@ -54,23 +54,17 @@ public class BasePage {
     protected void fill(By locator, String value) {
         WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
         element.click();
-        element.clear();
-        element.sendKeys(value);
 
-        // Some CI/headless runs on React-like forms can drop/ignore plain sendKeys updates.
-        // Ensure value sticks, then always emit input/change so controlled forms update state.
-        String currentValue = element.getAttribute("value");
-        if (currentValue == null || !currentValue.equals(value)) {
-            ((JavascriptExecutor) driver).executeScript(
-                    "arguments[0].value = arguments[1];",
-                    element,
-                    value
-            );
-        }
+        // Use native input setter to keep controlled-framework state in sync (React-safe).
         ((JavascriptExecutor) driver).executeScript(
-                "arguments[0].dispatchEvent(new Event('input', { bubbles: true }));"
-                        + "arguments[0].dispatchEvent(new Event('change', { bubbles: true }));",
-                element
+                "const el = arguments[0];"
+                        + "const val = arguments[1];"
+                        + "const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;"
+                        + "setter.call(el, val);"
+                        + "el.dispatchEvent(new Event('input', { bubbles: true }));"
+                        + "el.dispatchEvent(new Event('change', { bubbles: true }));",
+                element,
+                value
         );
         wait.until(d -> value.equals(element.getAttribute("value")));
     }
