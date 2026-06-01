@@ -1,3 +1,9 @@
+"""Selenium checkout tests for order completion and validation rules.
+
+This module validates the primary purchase flow and required-field validation
+behavior for checkout step one.
+"""
+
 import pytest
 from selenium.webdriver.remote.webdriver import WebDriver
 
@@ -14,6 +20,7 @@ def _add_backpack_and_open_checkout(
     cart_page: CartPage,
     checkout_page: CheckoutPage,
 ) -> None:
+    """Shared setup: add one product and navigate into checkout step one."""
     inventory.add_item_by_name(PRODUCT_BACKPACK)
     inventory.open_cart()
     cart_page.expect_loaded()
@@ -26,6 +33,7 @@ def test_complete_purchase_shows_confirmation(
     cart_page: CartPage,
     checkout_page: CheckoutPage,
 ) -> None:
+    """Verify end-to-end checkout shows the success confirmation message."""
     _add_backpack_and_open_checkout(logged_in_inventory, cart_page, checkout_page)
     checkout_page.fill_customer_info("Ada", "Lovelace", "12345")
     checkout_page.continue_to_overview()
@@ -51,6 +59,7 @@ def test_checkout_validation_errors(
     postal_code: str,
     expected_fragment: str,
 ) -> None:
+    """Verify required checkout fields return the expected validation text."""
     _add_backpack_and_open_checkout(logged_in_inventory, cart_page, checkout_page)
     checkout_page.fill_customer_info(first_name, last_name, postal_code)
     checkout_page.continue_to_overview()
@@ -65,6 +74,7 @@ def test_cancel_checkout_returns_to_cart(
     checkout_page: CheckoutPage,
     driver: WebDriver,
 ) -> None:
+    """Verify cancel from checkout step one returns user to cart page."""
     _add_backpack_and_open_checkout(logged_in_inventory, cart_page, checkout_page)
     checkout_page.cancel_checkout()
     assert "cart.html" in driver.current_url

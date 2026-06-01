@@ -17,3 +17,9 @@ node_modules/
 package-lock.json
 api/postman/newman/
 api/postman/reqres.environment.json
+.cursor/
+java/**/.env
+java/**/target/
+java/**/surefire-reports/
+*.dump
+*.dumpstream

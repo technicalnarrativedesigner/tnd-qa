@@ -1,3 +1,9 @@
+"""Playwright checkout tests for purchase completion and form validation.
+
+This module verifies the core checkout happy path and defensive validation
+cases that commonly break during UI changes.
+"""
+
 import re
 
 import pytest
@@ -16,6 +22,7 @@ def _add_backpack_and_open_checkout(
     cart_page: CartPage,
     checkout_page: CheckoutPage,
 ) -> None:
+    """Shared setup: add one item and navigate from cart to checkout step one."""
     inventory.add_item_by_name(PRODUCT_BACKPACK)
     inventory.open_cart()
     cart_page.expect_loaded()
@@ -29,6 +36,7 @@ def test_complete_purchase_shows_confirmation(
     cart_page: CartPage,
     checkout_page: CheckoutPage,
 ) -> None:
+    """Verify a complete checkout flow ends with confirmation message."""
     _add_backpack_and_open_checkout(logged_in_inventory, cart_page, checkout_page)
     checkout_page.fill_customer_info("Ada", "Lovelace", "12345")
     checkout_page.continue_to_overview()
@@ -55,6 +63,7 @@ def test_checkout_validation_errors(
     postal_code: str,
     expected_fragment: str,
 ) -> None:
+    """Verify missing required checkout fields produce correct validation errors."""
     _add_backpack_and_open_checkout(logged_in_inventory, cart_page, checkout_page)
     checkout_page.fill_customer_info(first_name, last_name, postal_code)
     checkout_page.continue_to_overview()
@@ -69,6 +78,7 @@ def test_cancel_checkout_returns_to_cart(
     checkout_page: CheckoutPage,
     page: Page,
 ) -> None:
+    """Verify canceling checkout sends user back to cart page."""
     _add_backpack_and_open_checkout(logged_in_inventory, cart_page, checkout_page)
     checkout_page.cancel_checkout()
     expect(page).to_have_url(re.compile(r".*cart\.html$"))

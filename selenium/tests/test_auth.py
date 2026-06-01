@@ -1,3 +1,9 @@
+"""Selenium authentication tests for SauceDemo login behavior.
+
+This module covers the main sign-in path and key negative auth cases to ensure
+credential validation and logout behavior remain stable across releases.
+"""
+
 import re
 
 import pytest
@@ -17,6 +23,7 @@ def test_valid_login_redirects_to_inventory(
     settings: Settings,
     driver: WebDriver,
 ) -> None:
+    """Verify valid credentials allow login and open inventory page."""
     login_page.open()
     login_page.login(settings.standard_user, settings.standard_password)
     inventory_page.expect_loaded()
@@ -25,6 +32,7 @@ def test_valid_login_redirects_to_inventory(
 
 @pytest.mark.regression
 def test_invalid_credentials_show_error(login_page: LoginPage) -> None:
+    """Verify invalid credentials display the expected auth error message."""
     login_page.open()
     login_page.login("invalid_user", "wrong_password")
     error = login_page.error_message
@@ -37,6 +45,7 @@ def test_locked_out_user_shows_error(
     login_page: LoginPage,
     settings: Settings,
 ) -> None:
+    """Verify locked users cannot sign in and receive lockout feedback."""
     login_page.open()
     login_page.login(settings.locked_out_user, settings.locked_out_password)
     error = login_page.error_message
@@ -50,6 +59,7 @@ def test_logout_returns_to_login(
     login_page: LoginPage,
     driver: WebDriver,
 ) -> None:
+    """Verify logout redirects to login and removes inventory session state."""
     logged_in_inventory.logout()
     login_page.wait.until(EC.presence_of_element_located((By.ID, "user-name")))
     assert "inventory.html" not in driver.current_url

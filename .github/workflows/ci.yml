@@ -80,6 +80,76 @@ jobs:
       - name: Run Selenium suite
         run: pytest
 
+  java_playwright:
+    name: UI (Java Playwright)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: java/playwright
+    env:
+      BASE_URL: https://www.saucedemo.com
+      STANDARD_USER: ${{ secrets.STANDARD_USER }}
+      STANDARD_PASSWORD: ${{ secrets.STANDARD_PASSWORD }}
+      LOCKED_OUT_USER: ${{ secrets.LOCKED_OUT_USER }}
+      LOCKED_OUT_PASSWORD: ${{ secrets.LOCKED_OUT_PASSWORD }}
+      HEADED: false
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      - name: Run Java Playwright suite
+        run: mvn test
+
+      - name: Upload Java Playwright reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: java-playwright-surefire
+          path: java/playwright/target/surefire-reports
+          if-no-files-found: ignore
+
+  java_selenium:
+    name: UI (Java Selenium)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: java/selenium
+    env:
+      BASE_URL: https://www.saucedemo.com
+      STANDARD_USER: ${{ secrets.STANDARD_USER }}
+      STANDARD_PASSWORD: ${{ secrets.STANDARD_PASSWORD }}
+      LOCKED_OUT_USER: ${{ secrets.LOCKED_OUT_USER }}
+      LOCKED_OUT_PASSWORD: ${{ secrets.LOCKED_OUT_PASSWORD }}
+      HEADED: false
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      - name: Run Java Selenium suite
+        run: mvn test
+
+      - name: Upload Java Selenium reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: java-selenium-surefire
+          path: java/selenium/target/surefire-reports
+          if-no-files-found: ignore
+
   api_postman:
     name: API (Postman/Newman)
     runs-on: ubuntu-latest

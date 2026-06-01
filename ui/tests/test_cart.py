@@ -1,3 +1,9 @@
+"""Playwright cart tests covering in-cart actions and navigation.
+
+The scenarios below protect expected user behavior once items are in the cart:
+removing products and returning to inventory to continue shopping.
+"""
+
 import re
 
 import pytest
@@ -15,6 +21,7 @@ def test_remove_item_on_cart_page_clears_badge(
     logged_in_inventory: InventoryPage,
     cart_page: CartPage,
 ) -> None:
+    """Verify removing the only cart item clears both list and cart badge."""
     logged_in_inventory.add_item_by_name(PRODUCT_BACKPACK)
     logged_in_inventory.open_cart()
     cart_page.expect_loaded()
@@ -29,6 +36,7 @@ def test_continue_shopping_returns_to_inventory(
     cart_page: CartPage,
     page: Page,
 ) -> None:
+    """Verify 'Continue Shopping' navigates back to the inventory page."""
     logged_in_inventory.add_item_by_name(PRODUCT_BACKPACK)
     logged_in_inventory.open_cart()
     cart_page.expect_loaded()

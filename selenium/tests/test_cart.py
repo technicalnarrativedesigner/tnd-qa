@@ -1,3 +1,9 @@
+"""Selenium cart tests for in-cart product management and navigation.
+
+The scenarios protect expected behavior when users remove items or return to
+inventory from the cart page.
+"""
+
 import pytest
 from selenium.webdriver.remote.webdriver import WebDriver
 
@@ -13,6 +19,7 @@ def test_remove_item_on_cart_page_clears_badge(
     logged_in_inventory: InventoryPage,
     cart_page: CartPage,
 ) -> None:
+    """Verify removing the only cart item clears item list and badge count."""
     logged_in_inventory.add_item_by_name(PRODUCT_BACKPACK)
     logged_in_inventory.open_cart()
     cart_page.expect_loaded()
@@ -27,6 +34,7 @@ def test_continue_shopping_returns_to_inventory(
     cart_page: CartPage,
     driver: WebDriver,
 ) -> None:
+    """Verify continue shopping routes the user back to inventory page."""
     logged_in_inventory.add_item_by_name(PRODUCT_BACKPACK)
     logged_in_inventory.open_cart()
     cart_page.expect_loaded()

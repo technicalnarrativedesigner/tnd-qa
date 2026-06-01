@@ -1,3 +1,9 @@
+"""Playwright authentication tests for the SauceDemo login flow.
+
+This module validates happy-path login plus key negative auth scenarios that
+are common regression targets in UI automation suites.
+"""
+
 import re
 
 import pytest
@@ -15,6 +21,7 @@ def test_valid_login_redirects_to_inventory(
     settings: Settings,
     page: Page,
 ) -> None:
+    """Verify a valid user can sign in and lands on the inventory page."""
     login_page.open()
     login_page.login(settings.standard_user, settings.standard_password)
     inventory_page.expect_loaded()
@@ -25,6 +32,7 @@ def test_valid_login_redirects_to_inventory(
 def test_invalid_credentials_show_error(
     login_page: LoginPage,
 ) -> None:
+    """Verify invalid credentials show the expected authentication error."""
     login_page.open()
     login_page.login("invalid_user", "wrong_password")
     expect(login_page.error_message).to_be_visible()
@@ -38,6 +46,7 @@ def test_locked_out_user_shows_error(
     login_page: LoginPage,
     settings: Settings,
 ) -> None:
+    """Verify a locked account is rejected with the lockout message."""
     login_page.open()
     login_page.login(settings.locked_out_user, settings.locked_out_password)
     expect(login_page.error_message).to_be_visible()
@@ -52,6 +61,7 @@ def test_logout_returns_to_login(
     login_page: LoginPage,
     page: Page,
 ) -> None:
+    """Verify logout invalidates the session and returns to login screen."""
     logged_in_inventory.logout()
     expect(page).to_have_url(re.compile(r".*/$"))
     expect(page.locator("#login-button")).to_be_visible()
