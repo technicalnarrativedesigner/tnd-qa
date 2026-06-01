@@ -85,8 +85,12 @@ public class BasePage {
                 + System.currentTimeMillis()
                 + "}";
         try {
+            Path logPath = Path.of(DEBUG_LOG_PATH);
+            if (logPath.getParent() != null) {
+                Files.createDirectories(logPath.getParent());
+            }
             Files.writeString(
-                    Path.of(DEBUG_LOG_PATH),
+                    logPath,
                     line + System.lineSeparator(),
                     StandardOpenOption.CREATE,
                     StandardOpenOption.APPEND
@@ -94,6 +98,7 @@ public class BasePage {
         } catch (IOException ignored) {
             // Never fail the test because of debug logging.
         }
+        System.out.println(line);
     }
 
     /**
