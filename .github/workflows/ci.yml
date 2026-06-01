@@ -95,7 +95,7 @@ jobs:
 
   java_playwright:
     name: UI (Java Playwright, ${{ matrix.browser }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
