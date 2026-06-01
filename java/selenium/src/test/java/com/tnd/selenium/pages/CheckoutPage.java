@@ -114,6 +114,9 @@ public class CheckoutPage extends BasePage {
             String timeoutUrl = driver.getCurrentUrl();
             boolean timeoutHasError = !driver.findElements(ERROR_MESSAGE).isEmpty();
             String timeoutErrorText = timeoutHasError ? driver.findElement(ERROR_MESSAGE).getText().trim() : "";
+            String timeoutFirst = driver.findElement(FIRST_NAME).getAttribute("value");
+            String timeoutLast = driver.findElement(LAST_NAME).getAttribute("value");
+            String timeoutPostal = driver.findElement(POSTAL_CODE).getAttribute("value");
             // #region agent log
             debugLog(
                     "pre-fix",
@@ -129,7 +132,22 @@ public class CheckoutPage extends BasePage {
                             + "\"}"
             );
             // #endregion
-            throw e;
+            throw new TimeoutException(
+                    "Checkout did not reach step two. "
+                            + "url="
+                            + timeoutUrl
+                            + ", hasError="
+                            + timeoutHasError
+                            + ", errorText='"
+                            + timeoutErrorText
+                            + "', firstLen="
+                            + timeoutFirst.length()
+                            + ", lastLen="
+                            + timeoutLast.length()
+                            + ", postalLen="
+                            + timeoutPostal.length(),
+                    e
+            );
         }
     }
 
