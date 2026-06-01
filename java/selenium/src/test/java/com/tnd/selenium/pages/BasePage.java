@@ -57,18 +57,22 @@ public class BasePage {
         element.clear();
         element.sendKeys(value);
 
-        // Some CI/headless runs on React-like forms can drop sendKeys updates.
-        // If value did not stick, force-set value and dispatch input/change events.
+        // Some CI/headless runs on React-like forms can drop/ignore plain sendKeys updates.
+        // Ensure value sticks, then always emit input/change so controlled forms update state.
         String currentValue = element.getAttribute("value");
         if (currentValue == null || !currentValue.equals(value)) {
             ((JavascriptExecutor) driver).executeScript(
-                    "arguments[0].value = arguments[1];"
-                            + "arguments[0].dispatchEvent(new Event('input', { bubbles: true }));"
-                            + "arguments[0].dispatchEvent(new Event('change', { bubbles: true }));",
+                    "arguments[0].value = arguments[1];",
                     element,
                     value
             );
         }
+        ((JavascriptExecutor) driver).executeScript(
+                "arguments[0].dispatchEvent(new Event('input', { bubbles: true }));"
+                        + "arguments[0].dispatchEvent(new Event('change', { bubbles: true }));",
+                element
+        );
+        wait.until(d -> value.equals(element.getAttribute("value")));
     }
 
 }
