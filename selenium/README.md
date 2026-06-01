@@ -73,7 +73,7 @@ Same 14 scenarios as Playwright:
 | | Playwright (`ui/`) | Selenium (`selenium/`) |
 |--|-------------------|------------------------|
 | Waits | Built-in auto-wait | Explicit `WebDriverWait` |
-| Driver | `playwright install chromium` | Selenium Manager + local Chrome |
+| Driver | `playwright install --with-deps chromium firefox webkit` | Selenium Manager + local browser binaries |
 | Assertions | `expect(locator)` | Standard `assert` + `EC` |
 
 Both suites share `.env` variable names and page object structure for easy comparison.

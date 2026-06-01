@@ -126,10 +126,16 @@ docker compose run --rm api_newman
 Optional full run:
 
 ```bash
-docker compose run --rm ui_playwright \
-  && docker compose run --rm ui_selenium \
-  && docker compose run --rm java_playwright \
-  && docker compose run --rm java_selenium \
+docker compose run --rm -e BROWSER=chromium ui_playwright \
+  && docker compose run --rm -e BROWSER=firefox ui_playwright \
+  && docker compose run --rm -e BROWSER=webkit ui_playwright \
+  && docker compose run --rm -e SELENIUM_BROWSER=chromium ui_selenium \
+  && docker compose run --rm -e SELENIUM_BROWSER=firefox ui_selenium \
+  && docker compose run --rm -e BROWSER=chromium java_playwright \
+  && docker compose run --rm -e BROWSER=firefox java_playwright \
+  && docker compose run --rm -e BROWSER=webkit java_playwright \
+  && docker compose run --rm -e SELENIUM_BROWSER=chromium java_selenium \
+  && docker compose run --rm -e SELENIUM_BROWSER=firefox java_selenium \
   && docker compose run --rm api_newman
 ```
 
