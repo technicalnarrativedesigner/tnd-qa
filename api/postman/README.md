@@ -62,6 +62,17 @@ With an env var override:
 npx newman run reqres.collection.json -e reqres.environment.json --env-var "apiKey=$REQRES_API_KEY"
 ```
 
+## Run with Docker
+
+From repo root:
+
+```bash
+cp docker/.env.example docker/.env
+# set REQRES_API_KEY in docker/.env before running
+docker compose build api_newman
+docker compose run --rm api_newman
+```
+
 ## Run in Postman GUI
 
 1. Import `reqres.collection.json`

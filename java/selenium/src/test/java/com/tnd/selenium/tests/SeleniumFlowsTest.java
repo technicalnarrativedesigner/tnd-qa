@@ -14,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 
 /**
  * Minimal Selenium Java flow suite.
@@ -38,14 +40,33 @@ class SeleniumFlowsTest {
     void setUp() {
         // Keep per-test browser sessions isolated, similar to pytest fixtures.
         config = TestConfig.load();
+        String browserName = System.getenv().getOrDefault("SELENIUM_BROWSER", "chromium").toLowerCase();
+        boolean headed = config.headed();
 
-        ChromeOptions options = new ChromeOptions();
-        if (!config.headed()) {
-            options.addArguments("--headless=new");
+        if ("firefox".equals(browserName)) {
+            FirefoxOptions options = new FirefoxOptions();
+            String firefoxBinary = System.getenv("FIREFOX_BIN");
+            if (firefoxBinary != null && !firefoxBinary.isBlank()) {
+                options.setBinary(firefoxBinary);
+            }
+            if (!headed) {
+                options.addArguments("-headless");
+            }
+            driver = new FirefoxDriver(options);
+        } else if ("chromium".equals(browserName) || "chrome".equals(browserName)) {
+            ChromeOptions options = new ChromeOptions();
+            String chromeBinary = System.getenv().getOrDefault("CHROME_BIN", "/usr/bin/chromium");
+            options.setBinary(chromeBinary);
+            if (!headed) {
+                options.addArguments("--headless=new");
+            }
+            options.addArguments("--window-size=1280,720", "--disable-gpu", "--disable-dev-shm-usage", "--no-sandbox");
+            driver = new ChromeDriver(options);
+        } else {
+            throw new IllegalArgumentException(
+                    "Unsupported SELENIUM_BROWSER='" + browserName + "'. Use chromium or firefox."
+            );
         }
-        options.addArguments("--window-size=1280,720", "--disable-gpu", "--disable-dev-shm-usage", "--no-sandbox");
-
-        driver = new ChromeDriver(options);
         loginPage = new LoginPage(driver, config.baseUrl());
         inventoryPage = new InventoryPage(driver, config.baseUrl());
         cartPage = new CartPage(driver, config.baseUrl());

@@ -1,5 +1,9 @@
 package com.tnd.selenium.pages;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
@@ -12,6 +16,9 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
  * <p>Purpose: encapsulate checkout form, overview progression, and completion assertions.
  */
 public class CheckoutPage extends BasePage {
+    private static final String DEBUG_LOG_PATH =
+            "/home/technicalnarrativedesigner/Encrypted/Projects/TND/tnd-qa/.cursor/debug-3ba741.log";
+    private static final String DEBUG_SESSION_ID = "3ba741";
     private static final By FIRST_NAME = By.id("first-name");
     private static final By LAST_NAME = By.id("last-name");
     private static final By POSTAL_CODE = By.id("postal-code");
@@ -41,12 +48,10 @@ public class CheckoutPage extends BasePage {
         // #region agent log
         debugLog(
                 "pre-fix",
-                "H2",
+                "H1",
                 "CheckoutPage.fillCustomerInfo",
-                "Checkout inputs populated",
-                "{\"url\":\""
-                        + jsonEscape(driver.getCurrentUrl())
-                        + "\",\"firstLen\":"
+                "Checkout field values after fill",
+                "{\"firstLen\":"
                         + firstValue.length()
                         + ",\"lastLen\":"
                         + lastValue.length()
@@ -65,89 +70,68 @@ public class CheckoutPage extends BasePage {
         // #region agent log
         debugLog(
                 "pre-fix",
-                "H1",
+                "H2",
                 "CheckoutPage.continueToOverview",
-                "Continue button state before submit",
-                "{\"url\":\""
-                        + jsonEscape(driver.getCurrentUrl())
-                        + "\",\"displayed\":"
+                "Continue button ready state",
+                "{\"displayed\":"
                         + continueButton.isDisplayed()
                         + ",\"enabled\":"
                         + continueButton.isEnabled()
-                        + "}"
+                        + ",\"url\":\""
+                        + jsonEscape(driver.getCurrentUrl())
+                        + "\"}"
         );
         // #endregion
 
         click(CONTINUE);
-
-        String urlAfterClick = driver.getCurrentUrl();
-        boolean hasError = !driver.findElements(ERROR_MESSAGE).isEmpty();
-        String errorText = hasError ? driver.findElement(ERROR_MESSAGE).getText().trim() : "";
+        boolean hasErrorAfterClick = !driver.findElements(ERROR_MESSAGE).isEmpty();
+        String errorAfterClick = hasErrorAfterClick ? driver.findElement(ERROR_MESSAGE).getText().trim() : "";
         // #region agent log
         debugLog(
                 "pre-fix",
                 "H3",
                 "CheckoutPage.continueToOverview",
-                "State immediately after continue click",
+                "State after continue click",
                 "{\"url\":\""
-                        + jsonEscape(urlAfterClick)
+                        + jsonEscape(driver.getCurrentUrl())
                         + "\",\"hasError\":"
-                        + hasError
+                        + hasErrorAfterClick
                         + ",\"errorText\":\""
-                        + jsonEscape(errorText)
+                        + jsonEscape(errorAfterClick)
                         + "\"}"
         );
         // #endregion
 
         try {
             wait.until(ExpectedConditions.urlContains("checkout-step-two.html"));
+        } catch (TimeoutException e) {
+            String firstValue = driver.findElement(FIRST_NAME).getAttribute("value");
+            String lastValue = driver.findElement(LAST_NAME).getAttribute("value");
+            String postalValue = driver.findElement(POSTAL_CODE).getAttribute("value");
+            boolean hasErrorOnTimeout = !driver.findElements(ERROR_MESSAGE).isEmpty();
+            String errorOnTimeout = hasErrorOnTimeout ? driver.findElement(ERROR_MESSAGE).getText().trim() : "";
             // #region agent log
             debugLog(
                     "pre-fix",
                     "H4",
                     "CheckoutPage.continueToOverview",
-                    "Reached checkout step two",
-                    "{\"url\":\"" + jsonEscape(driver.getCurrentUrl()) + "\"}"
-            );
-            // #endregion
-        } catch (TimeoutException e) {
-            String timeoutUrl = driver.getCurrentUrl();
-            boolean timeoutHasError = !driver.findElements(ERROR_MESSAGE).isEmpty();
-            String timeoutErrorText = timeoutHasError ? driver.findElement(ERROR_MESSAGE).getText().trim() : "";
-            String timeoutFirst = driver.findElement(FIRST_NAME).getAttribute("value");
-            String timeoutLast = driver.findElement(LAST_NAME).getAttribute("value");
-            String timeoutPostal = driver.findElement(POSTAL_CODE).getAttribute("value");
-            // #region agent log
-            debugLog(
-                    "pre-fix",
-                    "H5",
-                    "CheckoutPage.continueToOverview",
                     "Timed out waiting for checkout step two",
                     "{\"url\":\""
-                            + jsonEscape(timeoutUrl)
+                            + jsonEscape(driver.getCurrentUrl())
                             + "\",\"hasError\":"
-                            + timeoutHasError
+                            + hasErrorOnTimeout
                             + ",\"errorText\":\""
-                            + jsonEscape(timeoutErrorText)
-                            + "\"}"
+                            + jsonEscape(errorOnTimeout)
+                            + "\",\"firstLen\":"
+                            + firstValue.length()
+                            + ",\"lastLen\":"
+                            + lastValue.length()
+                            + ",\"postalLen\":"
+                            + postalValue.length()
+                            + "}"
             );
             // #endregion
-            throw new TimeoutException(
-                    "Checkout did not reach step two. "
-                            + "url="
-                            + timeoutUrl
-                            + ", hasError="
-                            + timeoutHasError
-                            + ", errorText='"
-                            + timeoutErrorText
-                            + "', firstLen="
-                            + timeoutFirst.length()
-                            + ", lastLen="
-                            + timeoutLast.length()
-                            + ", postalLen="
-                            + timeoutPostal.length(),
-                    e
-            );
+            throw e;
         }
     }
 
@@ -164,5 +148,44 @@ public class CheckoutPage extends BasePage {
      */
     public String completeHeaderText() {
         return wait.until(ExpectedConditions.visibilityOfElementLocated(COMPLETE_HEADER)).getText().trim();
+    }
+
+    private void debugLog(String runId, String hypothesisId, String location, String message, String dataJson) {
+        String line = "{\"sessionId\":\""
+                + DEBUG_SESSION_ID
+                + "\",\"runId\":\""
+                + runId
+                + "\",\"hypothesisId\":\""
+                + hypothesisId
+                + "\",\"location\":\""
+                + location
+                + "\",\"message\":\""
+                + jsonEscape(message)
+                + "\",\"data\":"
+                + dataJson
+                + ",\"timestamp\":"
+                + System.currentTimeMillis()
+                + "}";
+        try {
+            Path logPath = Path.of(DEBUG_LOG_PATH);
+            if (logPath.getParent() != null) {
+                Files.createDirectories(logPath.getParent());
+            }
+            Files.writeString(logPath, line + System.lineSeparator(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+        } catch (IOException ignored) {
+            // Keep debug instrumentation non-blocking.
+        }
+        System.out.println(line);
+    }
+
+    private String jsonEscape(String value) {
+        if (value == null) {
+            return "";
+        }
+        return value
+                .replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r");
     }
 }

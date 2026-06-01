@@ -31,10 +31,22 @@ cp .env.example .env
 ## Run tests
 
 ```bash
-pytest                    # headless Chrome (default)
+pytest                                 # headless Chromium (default)
+SELENIUM_BROWSER=firefox pytest        # Firefox
 pytest -m smoke           # critical path only
 pytest -m regression      # broader coverage
 HEADED=1 pytest           # visible browser window
+```
+
+## Run with Docker
+
+From repo root:
+
+```bash
+cp docker/.env.example docker/.env
+docker compose build ui_selenium
+docker compose run --rm -e SELENIUM_BROWSER=chromium ui_selenium
+docker compose run --rm -e SELENIUM_BROWSER=firefox ui_selenium
 ```
 
 ## Layout
@@ -61,7 +73,7 @@ Same 14 scenarios as Playwright:
 | | Playwright (`ui/`) | Selenium (`selenium/`) |
 |--|-------------------|------------------------|
 | Waits | Built-in auto-wait | Explicit `WebDriverWait` |
-| Driver | `playwright install chromium` | Selenium Manager + local Chrome |
+| Driver | `playwright install --with-deps chromium firefox webkit` | Selenium Manager + local browser binaries |
 | Assertions | `expect(locator)` | Standard `assert` + `EC` |
 
 Both suites share `.env` variable names and page object structure for easy comparison.
