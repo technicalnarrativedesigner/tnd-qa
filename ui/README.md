@@ -47,6 +47,16 @@ playwright show-trace test-results/<path-to-trace.zip>
 playwright show-report
 ```
 
+## Run with Docker
+
+From repo root:
+
+```bash
+cp docker/.env.example docker/.env
+docker compose build ui_playwright
+docker compose run --rm ui_playwright
+```
+
 ## Layout
 
 | Path | Purpose |

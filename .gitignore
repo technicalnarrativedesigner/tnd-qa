@@ -18,6 +18,7 @@ package-lock.json
 api/postman/newman/
 api/postman/reqres.environment.json
 .cursor/
+docker/.env
 java/**/.env
 java/**/target/
 java/**/surefire-reports/

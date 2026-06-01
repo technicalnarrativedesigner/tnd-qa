@@ -37,6 +37,16 @@ pytest -m regression      # broader coverage
 HEADED=1 pytest           # visible browser window
 ```
 
+## Run with Docker
+
+From repo root:
+
+```bash
+cp docker/.env.example docker/.env
+docker compose build ui_selenium
+docker compose run --rm ui_selenium
+```
+
 ## Layout
 
 | Path | Purpose |

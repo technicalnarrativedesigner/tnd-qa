@@ -95,6 +95,38 @@ Detailed setup:
 - [java/README.md](java/README.md)
 - [api/postman/README.md](api/postman/README.md)
 
+## Run with Docker
+
+Docker support is available for all suites via `docker-compose.yml`.
+
+```bash
+cp docker/.env.example docker/.env
+```
+
+Update `docker/.env` with your real values (especially `REQRES_API_KEY`), then run:
+
+```bash
+# build all suite images
+docker compose build
+
+# run one suite
+docker compose run --rm ui_playwright
+docker compose run --rm ui_selenium
+docker compose run --rm java_playwright
+docker compose run --rm java_selenium
+docker compose run --rm api_newman
+```
+
+Optional full run:
+
+```bash
+docker compose run --rm ui_playwright \
+  && docker compose run --rm ui_selenium \
+  && docker compose run --rm java_playwright \
+  && docker compose run --rm java_selenium \
+  && docker compose run --rm api_newman
+```
+
 ## CI (GitHub Actions)
 
 Workflow: [`.github/workflows/ci.yml`](.github/workflows/ci.yml)

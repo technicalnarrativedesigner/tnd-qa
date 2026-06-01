@@ -1,0 +1,13 @@
+.git
+.github
+.cursor
+**/.venv
+**/__pycache__
+**/.pytest_cache
+**/node_modules
+**/target
+**/surefire-reports
+**/playwright-report
+**/test-results
+**/*.pyc
+*.log

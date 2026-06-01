@@ -1,0 +1,66 @@
+services:
+  ui_playwright:
+    build:
+      context: .
+      dockerfile: docker/ui-playwright.Dockerfile
+    env_file:
+      - docker/.env
+    environment:
+      BASE_URL: ${BASE_URL:-https://www.saucedemo.com}
+      STANDARD_USER: ${STANDARD_USER:-standard_user}
+      STANDARD_PASSWORD: ${STANDARD_PASSWORD:-secret_sauce}
+      LOCKED_OUT_USER: ${LOCKED_OUT_USER:-locked_out_user}
+      LOCKED_OUT_PASSWORD: ${LOCKED_OUT_PASSWORD:-secret_sauce}
+    shm_size: "1gb"
+
+  ui_selenium:
+    build:
+      context: .
+      dockerfile: docker/ui-selenium.Dockerfile
+    env_file:
+      - docker/.env
+    environment:
+      BASE_URL: ${BASE_URL:-https://www.saucedemo.com}
+      STANDARD_USER: ${STANDARD_USER:-standard_user}
+      STANDARD_PASSWORD: ${STANDARD_PASSWORD:-secret_sauce}
+      LOCKED_OUT_USER: ${LOCKED_OUT_USER:-locked_out_user}
+      LOCKED_OUT_PASSWORD: ${LOCKED_OUT_PASSWORD:-secret_sauce}
+      HEADED: ${HEADED:-false}
+    shm_size: "1gb"
+
+  java_playwright:
+    build:
+      context: .
+      dockerfile: docker/java-playwright.Dockerfile
+    env_file:
+      - docker/.env
+    environment:
+      BASE_URL: ${BASE_URL:-https://www.saucedemo.com}
+      STANDARD_USER: ${STANDARD_USER:-standard_user}
+      STANDARD_PASSWORD: ${STANDARD_PASSWORD:-secret_sauce}
+      LOCKED_OUT_USER: ${LOCKED_OUT_USER:-locked_out_user}
+      LOCKED_OUT_PASSWORD: ${LOCKED_OUT_PASSWORD:-secret_sauce}
+      HEADED: ${HEADED:-false}
+    shm_size: "1gb"
+
+  java_selenium:
+    build:
+      context: .
+      dockerfile: docker/java-selenium.Dockerfile
+    env_file:
+      - docker/.env
+    environment:
+      BASE_URL: ${BASE_URL:-https://www.saucedemo.com}
+      STANDARD_USER: ${STANDARD_USER:-standard_user}
+      STANDARD_PASSWORD: ${STANDARD_PASSWORD:-secret_sauce}
+      LOCKED_OUT_USER: ${LOCKED_OUT_USER:-locked_out_user}
+      LOCKED_OUT_PASSWORD: ${LOCKED_OUT_PASSWORD:-secret_sauce}
+      HEADED: ${HEADED:-false}
+    shm_size: "1gb"
+
+  api_newman:
+    build:
+      context: .
+      dockerfile: docker/api-newman.Dockerfile
+    env_file:
+      - docker/.env

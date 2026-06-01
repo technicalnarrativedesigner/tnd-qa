@@ -17,6 +17,17 @@ Each Java project intentionally covers 3 core flows:
 
 The full broader coverage remains in the Python suites.
 
+## Run with Docker
+
+From repo root:
+
+```bash
+cp docker/.env.example docker/.env
+docker compose build java_playwright java_selenium
+docker compose run --rm java_playwright
+docker compose run --rm java_selenium
+```
+
 ## Proof of Java runs
 
 ### Java Playwright
