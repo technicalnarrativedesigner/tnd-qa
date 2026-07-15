@@ -16,9 +16,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
  * <p>Purpose: encapsulate checkout form, overview progression, and completion assertions.
  */
 public class CheckoutPage extends BasePage {
-    private static final String DEBUG_LOG_PATH =
-            "/home/technicalnarrativedesigner/Encrypted/Projects/TND/tnd-qa/.cursor/debug-3ba741.log";
-    private static final String DEBUG_SESSION_ID = "3ba741";
     private static final By FIRST_NAME = By.id("first-name");
     private static final By LAST_NAME = By.id("last-name");
     private static final By POSTAL_CODE = By.id("postal-code");
@@ -148,44 +145,5 @@ public class CheckoutPage extends BasePage {
      */
     public String completeHeaderText() {
         return wait.until(ExpectedConditions.visibilityOfElementLocated(COMPLETE_HEADER)).getText().trim();
-    }
-
-    private void debugLog(String runId, String hypothesisId, String location, String message, String dataJson) {
-        String line = "{\"sessionId\":\""
-                + DEBUG_SESSION_ID
-                + "\",\"runId\":\""
-                + runId
-                + "\",\"hypothesisId\":\""
-                + hypothesisId
-                + "\",\"location\":\""
-                + location
-                + "\",\"message\":\""
-                + jsonEscape(message)
-                + "\",\"data\":"
-                + dataJson
-                + ",\"timestamp\":"
-                + System.currentTimeMillis()
-                + "}";
-        try {
-            Path logPath = Path.of(DEBUG_LOG_PATH);
-            if (logPath.getParent() != null) {
-                Files.createDirectories(logPath.getParent());
-            }
-            Files.writeString(logPath, line + System.lineSeparator(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-        } catch (IOException ignored) {
-            // Keep debug instrumentation non-blocking.
-        }
-        System.out.println(line);
-    }
-
-    private String jsonEscape(String value) {
-        if (value == null) {
-            return "";
-        }
-        return value
-                .replace("\\", "\\\\")
-                .replace("\"", "\\\"")
-                .replace("\n", "\\n")
-                .replace("\r", "\\r");
     }
 }
