@@ -64,21 +64,6 @@ public class CheckoutPage extends BasePage {
      */
     public void continueToOverview() {
         WebElement continueButton = wait.until(ExpectedConditions.elementToBeClickable(CONTINUE));
-        // #region agent log
-        debugLog(
-                "pre-fix",
-                "H2",
-                "CheckoutPage.continueToOverview",
-                "Continue button ready state",
-                "{\"displayed\":"
-                        + continueButton.isDisplayed()
-                        + ",\"enabled\":"
-                        + continueButton.isEnabled()
-                        + ",\"url\":\""
-                        + jsonEscape(driver.getCurrentUrl())
-                        + "\"}"
-        );
-        // #endregion
 
         click(CONTINUE);
         boolean hasErrorAfterClick = !driver.findElements(ERROR_MESSAGE).isEmpty();
