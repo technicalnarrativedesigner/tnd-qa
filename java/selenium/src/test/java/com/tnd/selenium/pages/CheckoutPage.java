@@ -42,21 +42,6 @@ public class CheckoutPage extends BasePage {
         String firstValue = driver.findElement(FIRST_NAME).getAttribute("value");
         String lastValue = driver.findElement(LAST_NAME).getAttribute("value");
         String postalValue = driver.findElement(POSTAL_CODE).getAttribute("value");
-        // #region agent log
-        debugLog(
-                "pre-fix",
-                "H1",
-                "CheckoutPage.fillCustomerInfo",
-                "Checkout field values after fill",
-                "{\"firstLen\":"
-                        + firstValue.length()
-                        + ",\"lastLen\":"
-                        + lastValue.length()
-                        + ",\"postalLen\":"
-                        + postalValue.length()
-                        + "}"
-        );
-        // #endregion
     }
 
     /**
