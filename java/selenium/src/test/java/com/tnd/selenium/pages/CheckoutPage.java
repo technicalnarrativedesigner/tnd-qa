@@ -68,21 +68,6 @@ public class CheckoutPage extends BasePage {
         click(CONTINUE);
         boolean hasErrorAfterClick = !driver.findElements(ERROR_MESSAGE).isEmpty();
         String errorAfterClick = hasErrorAfterClick ? driver.findElement(ERROR_MESSAGE).getText().trim() : "";
-        // #region agent log
-        debugLog(
-                "pre-fix",
-                "H3",
-                "CheckoutPage.continueToOverview",
-                "State after continue click",
-                "{\"url\":\""
-                        + jsonEscape(driver.getCurrentUrl())
-                        + "\",\"hasError\":"
-                        + hasErrorAfterClick
-                        + ",\"errorText\":\""
-                        + jsonEscape(errorAfterClick)
-                        + "\"}"
-        );
-        // #endregion
 
         try {
             wait.until(ExpectedConditions.urlContains("checkout-step-two.html"));
@@ -92,27 +77,7 @@ public class CheckoutPage extends BasePage {
             String postalValue = driver.findElement(POSTAL_CODE).getAttribute("value");
             boolean hasErrorOnTimeout = !driver.findElements(ERROR_MESSAGE).isEmpty();
             String errorOnTimeout = hasErrorOnTimeout ? driver.findElement(ERROR_MESSAGE).getText().trim() : "";
-            // #region agent log
-            debugLog(
-                    "pre-fix",
-                    "H4",
-                    "CheckoutPage.continueToOverview",
-                    "Timed out waiting for checkout step two",
-                    "{\"url\":\""
-                            + jsonEscape(driver.getCurrentUrl())
-                            + "\",\"hasError\":"
-                            + hasErrorOnTimeout
-                            + ",\"errorText\":\""
-                            + jsonEscape(errorOnTimeout)
-                            + "\",\"firstLen\":"
-                            + firstValue.length()
-                            + ",\"lastLen\":"
-                            + lastValue.length()
-                            + ",\"postalLen\":"
-                            + postalValue.length()
-                            + "}"
-            );
-            // #endregion
+
             throw e;
         }
     }
