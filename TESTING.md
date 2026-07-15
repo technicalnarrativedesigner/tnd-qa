@@ -51,7 +51,6 @@ This project is designed as a **learning + showcase portfolio** for automation r
 
 ## Deliberately Out of Scope (for now)
 
-- Cross-browser matrix expansion
 - Visual regression testing
 - Performance/load testing
 - Full contract schema validation for every endpoint
